@@ -1,0 +1,22 @@
+<mat-card>
+  <form [formGroup]="deliveryForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Package</mat-label>
+      <mat-select formControlName="packageId">
+        <mat-option *ngFor="let pkg of packages" [value]="pkg._id">{{ pkg.name }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="deliveryForm.controls['packageId'].invalid && deliveryForm.controls['packageId'].touched">Package is required</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Driver</mat-label>
+      <input matInput formControlName="driver">
+      <mat-error *ngIf="deliveryForm.controls['driver'].invalid && deliveryForm.controls['driver'].touched">Driver is required</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>ETA</mat-label>
+      <input matInput type="datetime-local" formControlName="eta">
+      <mat-error *ngIf="deliveryForm.controls['eta'].invalid && deliveryForm.controls['eta'].touched">ETA is required</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" [disabled]="deliveryForm.invalid">Create Delivery</button>
+  </form>
+</mat-card>

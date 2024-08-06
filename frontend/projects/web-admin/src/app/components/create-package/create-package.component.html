@@ -1,0 +1,22 @@
+<mat-card>
+  <form [formGroup]="packageForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+      <mat-error *ngIf="packageForm.controls['name'].invalid && packageForm.controls['name'].touched">Name is required</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Weight</mat-label>
+      <input matInput type="number" formControlName="weight">
+      <mat-error *ngIf="packageForm.controls['weight'].invalid && packageForm.controls['weight'].touched">
+        Weight is required and must be a positive number
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Destination</mat-label>
+      <input matInput formControlName="destination">
+      <mat-error *ngIf="packageForm.controls['destination'].invalid && packageForm.controls['destination'].touched">Destination is required</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" [disabled]="packageForm.invalid">Create Package</button>
+  </form>
+</mat-card>
