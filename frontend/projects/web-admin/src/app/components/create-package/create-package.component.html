@@ -1,22 +1,111 @@
-<mat-card>
-  <form [formGroup]="packageForm" (ngSubmit)="onSubmit()">
-    <mat-form-field>
-      <mat-label>Name</mat-label>
-      <input matInput formControlName="name">
-      <mat-error *ngIf="packageForm.controls['name'].invalid && packageForm.controls['name'].touched">Name is required</mat-error>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Weight</mat-label>
-      <input matInput type="number" formControlName="weight">
-      <mat-error *ngIf="packageForm.controls['weight'].invalid && packageForm.controls['weight'].touched">
-        Weight is required and must be a positive number
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Destination</mat-label>
-      <input matInput formControlName="destination">
-      <mat-error *ngIf="packageForm.controls['destination'].invalid && packageForm.controls['destination'].touched">Destination is required</mat-error>
-    </mat-form-field>
-    <button mat-raised-button color="primary" type="submit" [disabled]="packageForm.invalid">Create Package</button>
-  </form>
-</mat-card>
+<form [formGroup]="packageForm" (ngSubmit)="onSubmit()" class="package-form ">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Package Form Creation</h1>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" class="form-control" id="description" formControlName="description" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('description').hasError('required')">
+              Description is required
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="weight">Weight (g)</label>
+            <input type="number" class="form-control" id="weight" formControlName="weight" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('weight').hasError('required')">
+              Weight is required
+            </div>
+            <div class="invalid-feedback" *ngIf="packageForm.get('weight').hasError('min')">
+              Weight must be at least 1 gram
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="width">Width (cm)</label>
+            <input type="number" class="form-control" id="width" formControlName="width" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('width').hasError('required')">
+              Width is required
+            </div>
+            <div class="invalid-feedback" *ngIf="packageForm.get('width').hasError('min')">
+              Width must be at least 1 cm
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="height">Height (cm)</label>
+            <input type="number" class="form-control" id="height" formControlName="height" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('height').hasError('required')">
+              Height is required
+            </div>
+            <div class="invalid-feedback" *ngIf="packageForm.get('height').hasError('min')">
+              Height must be at least 1 cm
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="depth">Depth (cm)</label>
+            <input type="number" class="form-control" id="depth" formControlName="depth" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('depth').hasError('required')">
+              Depth is required
+            </div>
+            <div class="invalid-feedback" *ngIf="packageForm.get('depth').hasError('min')">
+              Depth must be at least 1 cm
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="fromName">From Name</label>
+            <input type="text" class="form-control" id="fromName" formControlName="from_name" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('from_name').hasError('required')">
+              From Name is required
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="fromAddress">From Address</label>
+            <input type="text" class="form-control" id="fromAddress" formControlName="from_address" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('from_address').hasError('required')">
+              From Address is required
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="toName">To Name</label>
+            <input type="text" class="form-control" id="toName" formControlName="to_name" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('to_name').hasError('required')">
+              To Name is required
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="toAddress">To Address</label>
+            <input type="text" class="form-control" id="toAddress" formControlName="to_address" required>
+            <div class="invalid-feedback" *ngIf="packageForm.get('to_address').hasError('required')">
+              To Address is required
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-end">
+      <button type="submit" class="btn btn-primary" [disabled]="packageForm.invalid">
+        Submit
+      </button>
+    </div>
+  </div>
+</form>

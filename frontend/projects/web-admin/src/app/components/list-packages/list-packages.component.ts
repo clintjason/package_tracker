@@ -1,4 +1,3 @@
-// src/app/components/list-packages/list-packages.component.ts
 import { Component, OnInit } from '@angular/core';
 import { PackageService } from '../../services/package.service';
 

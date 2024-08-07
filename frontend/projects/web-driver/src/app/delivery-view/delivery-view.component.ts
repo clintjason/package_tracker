@@ -7,7 +7,7 @@ import { environment } from '../environments/environment';
 @Component({
   selector: 'app-delivery-view',
   templateUrl: './delivery-view.component.html',
-  styleUrls: ['./delivery-view.component.css']
+  styleUrls: ['./delivery-view.component.scss']
 })
 export class DeliveryViewComponent implements OnInit {
   deliveryId: string = '';

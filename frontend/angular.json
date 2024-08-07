@@ -281,6 +281,7 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/css/bootstrap.min.css",
               "projects/web-admin/src/styles.scss"
             ],
             "scripts": []

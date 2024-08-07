@@ -1,10 +1,10 @@
-// src/app/app.module.ts
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material.module';
@@ -23,9 +23,10 @@ import { ListDeliveriesComponent } from './components/list-deliveries/list-deliv
     ListDeliveriesComponent
   ],
   imports: [
-    CommonModule,
     BrowserModule,
+    CommonModule,
     RouterModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MaterialModule,
