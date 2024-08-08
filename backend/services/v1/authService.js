@@ -1,6 +1,6 @@
 const User = require('../../models/User');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 /**
  * Sign up a new customer or driver.
@@ -12,19 +12,18 @@ exports.signup = async (userData) => {
     try {
       const { role, email, password, firstName, lastName, phoneNumber, gender, address } = userData;
 
-        
-       if (role === 'driver' || role === 'customer') {
+       if (role === 'driver' || role === 'customer' || role === 'admin') {
             if (!email || !password || !firstName || !lastName || !phoneNumber || !gender || !address) {
-                return res.status(400).json({ message: 'All fields are required for driver/customer signup' });
+                return res.status(400).json({ message: 'All fields are required for signup' });
             }
         } else {
             return res.status(400).json({ message: 'Invalid role' });
         }
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({ email, password, firstName, lastName, phoneNumber, gender, address, role, password: hashedPassword });
         return await user.save();
     } catch (error) {
-        throw new Error('Error signing up user');
+        throw new Error(error || 'Error signing up user');
     }
 };
 
@@ -47,7 +46,7 @@ exports.signupAdmin = async (adminData) => {
         const admin = new User({ role, email, password, firstName, lastName, password: hashedPassword});
         return await admin.save();
     } catch (error) {
-        throw new Error('Error signing up admin');
+        throw new Error(error || 'Error signing up admin');
     }
 };
 
@@ -71,6 +70,6 @@ exports.login = async (email, password) => {
         const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
         return { token, user };
     } catch (error) {
-        throw new Error('Error logging in user');
+        throw new Error( error ||'Error logging in user');
     }
 };

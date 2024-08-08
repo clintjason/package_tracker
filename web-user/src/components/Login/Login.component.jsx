@@ -1,37 +1,39 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { object as YupObject} from 'yup';
-import { TextField, Avatar, Typography, FormHelperText, FormControl, FormControlLabel, Checkbox, Button, Grid, Box, Paper, Link, MenuItem, CssBaseline, CircularProgress, Snackbar, Alert } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
+import { Avatar, Typography, FormHelperText, FormControl, FormControlLabel, Checkbox, Button, Grid, Box, Paper, Link, CircularProgress, Snackbar, Alert } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import sideImg from '../../assets/pixlr-image-generator-cbe82a4b-0f58-4f73-8391-6048e2faf68a.png';
-import { TextField as FormikTextField, Select as FormikSelect, Checkbox as CheckboxWithLabel} from 'formik-mui';
-import {usernameValidationSchema, passwordValidationSchema, emailValidationSchema, roleValidationSchema, termsAndConditionsValidationSchema   } from '../../utils/ValidationSchemas';
-import { signup } from '../../services/api.service';
+import sideImg from '../../assets/15-dark.png';
+import {passwordValidationSchema, emailValidationSchema   } from '../../utils/ValidationSchemas';
+import { TextField as FormikTextField } from 'formik-mui';
+import { apiLogin } from '../../services/api.service';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login as loginReducer } from '../../reducers/authSlice'; 
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © PMS '}
+      {'Copyright © PackageTracker. '} <br/>
+      {'All rights reserved '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
   );
 }
 
-const SignUpSchema = YupObject().shape({
-  username: usernameValidationSchema,
+const SignInSchema = YupObject().shape({
   email: emailValidationSchema,
   password: passwordValidationSchema,
-  role: roleValidationSchema,
-  terms_and_conditions: termsAndConditionsValidationSchema,
 });
 
-export default function SignUp() {
+export default function SignIn () {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     setOpen(false);
@@ -40,13 +42,33 @@ export default function SignUp() {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      await signup(values);
+      const payload = {
+        password: values.password,
+        email: values.email
+      }
+      let data = await apiLogin(payload);
       setOpen(true);
+      
+      if (values.rememberMe) {
+        localStorage.setItem('pt_user', JSON.stringify(data));
+      } else {
+        sessionStorage.setItem('pt_user', JSON.stringify(data));
+      }
+      dispatch(loginReducer(data));
       setLoading(false);
-      navigate('/signin');
+      if(data.user.role === 'admin') {
+        navigate('/');
+        window.location.href=''
+      }
+      if (data.user.role === 'customer') {
+        navigate('/');
+      }
+      if (data.user.role === 'driver') {
+        navigate('/');
+      }
     } catch (error) {
-      console.error("Signup Error: ", error);
-      setLoading(false); 
+      console.error("Signin Error: ", error);
+      setLoading(false);
       setError(error.message);
     }
   };
@@ -83,27 +105,16 @@ export default function SignUp() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5" sx={{ mb: 4 }}>
-              Sign up
+              Sign in
             </Typography>
             <Formik
               initialValues={{ username: '', email: '', password: '', role: '', terms_and_conditions: false }}
-              validationSchema={SignUpSchema}
+              validationSchema={SignInSchema}
               onSubmit={handleSubmit}
             >
             {({ errors, touched }) => (
               <Form noValidate>
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Field
-                      component={FormikTextField}
-                      name="username"
-                      type="username"
-                      label="Username"
-                      fullWidth
-                      error={touched.username && Boolean(errors.username)}
-                      helperText={touched.username && errors.username}
-                    />
-                  </Grid>
                   <Grid item xs={12}>
                     <Field
                       component={FormikTextField}
@@ -127,37 +138,17 @@ export default function SignUp() {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <FormControl fullWidth error={touched.role && Boolean(errors.role)}>
-                      {/* <InputLabel id="role-label">Role</InputLabel> */}
-                      <Field
-                        component={FormikSelect}
-                        name="role"
-                        labelId="role-label"
-                        label="Role"
-                        fullWidth
-                      >
-                        <MenuItem value={"admin"}>Admin</MenuItem>
-                        <MenuItem value={"patient"}>Patient</MenuItem>
-                        <MenuItem value={"doctor"}>Doctor</MenuItem>
-                      </Field>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                  <FormControl error={touched.terms_and_conditions && Boolean(errors.terms_and_conditions)}>
-                      <Field name="terms_and_conditions">
+                  <FormControl error={touched.rememberMe && Boolean(errors.rememberMe)}>
+                      <Field name="rememberMe">
                         {({ field }) => (
                           <FormControlLabel
                             control={<Checkbox {...field} color="primary" />}
-                            label={
-                              <Link href="#" variant="body2">
-                                {"You've read and accept our terms and conditions"}
-                              </Link>
-                            }
+                            label="Remember me"
                           />
                         )}
                       </Field>
-                      {touched.terms_and_conditions && errors.terms_and_conditions && (
-                        <FormHelperText>{errors.terms_and_conditions}</FormHelperText>
+                      {touched.rememberMe && errors.rememberMe && (
+                        <FormHelperText>{errors.rememberMe}</FormHelperText>
                       )}
                     </FormControl>
                   </Grid>
@@ -173,12 +164,12 @@ export default function SignUp() {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign up
+                  Sign in
                 </Button>
                 }
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                   <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                    Sig Up successfull
+                    Login successfull
                   </Alert>
                 </Snackbar>
                 {error && (
@@ -189,9 +180,14 @@ export default function SignUp() {
                   </Snackbar>
                 )}
                 <Grid container>
+                  <Grid item xs>
+                    <Link href="#" variant="body2">
+                      Forgot password?
+                    </Link>
+                  </Grid>
                   <Grid item>
-                    <Link href="/signin" variant="body2">
-                      Already have an account? Sign in
+                    <Link href="/register" variant="body2">
+                      {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>
                 </Grid>

@@ -22,7 +22,11 @@
   "version": "1.0.0",
   "description": "Package Tracker Backend API",
   "main": "server.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/clintjason/package_tracker.git"
