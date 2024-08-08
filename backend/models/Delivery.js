@@ -12,6 +12,11 @@ const deliverySchema = new Schema({
         ref: 'Package',
         required: true
     },
+    driver: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     pickup_time: {
         type: Date
     },
