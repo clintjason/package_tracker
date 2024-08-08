@@ -20,9 +20,21 @@ app.use(session);
 app.use(cors());
 app.use(helmet({crossOriginResourcePolicy: false,}));
 
-// Request logging middlewares
+// Middleware to log incoming requests
 app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.url}`);
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const message = `${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`;
+    logger.info(message);
+  });
+  next();
+});
+
+// Request Error Handling and logging middlewares
+app.use((err, req, res, next) => {
+  logger.error(`Error processing request: ${req.method} ${req.url}`);
+  logger.error(`Stack Trace: ${err.stack}`);
   next();
 });
 
@@ -34,5 +46,15 @@ app.use('/api/v1/deliveries', require('./routes/v1/deliveryRoutes'));
 
 // Error handling middleware
 app.use(errorMiddleware.errorHandler);
+
+// Capture uncaught exceptions and rejections
+process.on('uncaughtException', (err) => {
+  logger.error('Uncaught Exception: ', err);
+  process.exit(1); // Optional: Consider graceful shutdown before exiting
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 
 module.exports = app;
