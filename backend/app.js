@@ -1,5 +1,7 @@
 const express = require('express');
 require('dotenv').config();
+const cors = require('cors');
+const helmet = require('helmet');
 
 const connectDB = require('./config/db');
 const session = require('./config/session');
@@ -13,6 +15,10 @@ connectDB();
 
 app.use(express.json());
 app.use(session);
+
+// security config
+app.use(cors());
+app.use(helmet({crossOriginResourcePolicy: false,}));
 
 // Request logging middlewares
 app.use((req, res, next) => {
