@@ -1,12 +1,13 @@
 import {useState} from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Avatar, Typography, Button, Grid, Box, Paper, CssBaseline, CircularProgress, Snackbar, Alert } from '@mui/material';
+import { Avatar, Typography, Button, Grid, Box, Paper, CssBaseline, CircularProgress, Snackbar, Alert, Icon } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import sideImg from '../../assets/packageimage.png';
 import { TextField as FormikTextField } from 'formik-mui';
 import { packageValidationSchema } from '../../utils/ValidationSchemas';
 import { createPackage } from '../../services/api.service';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function Copyright(props) {
   return (
@@ -21,7 +22,7 @@ function Copyright(props) {
 
 export default function CreatePackage() {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
 
@@ -35,8 +36,10 @@ export default function CreatePackage() {
     depth: '',
     from_name: '',
     from_address: '',
+    from_location: '',
     to_name: '',
     to_address: '',
+    to_location: ''
   }
 
   const handleClose = () => {
@@ -46,10 +49,23 @@ export default function CreatePackage() {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      await createPackage(values);
+      console.log(values);
+      const [from_loc_lat, from_loc_lng] = values.from_location.split(" ");
+      const [to_loc_lat, to_loc_lng] = values.to_location.split(" ");
+      const from_location = {
+        lat: parseFloat(from_loc_lat),
+        lng: parseFloat(from_loc_lng)
+      };
+
+      const to_location = {
+        lat: parseFloat(to_loc_lat),
+        lng: parseFloat(to_loc_lng)
+      };
+      const payload = {...values, from_location: from_location, to_location: to_location }
+      await createPackage(payload);
       setOpen(true);
       setLoading(false);
-      navigate('/view-packages');
+     // navigate('/view-packages');
     } catch (error) {
       console.error("createPackage Error: ", error);
       setLoading(false); 
@@ -59,6 +75,12 @@ export default function CreatePackage() {
 
   return (
     <>
+      <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', mb: 4 }}>
+        <Icon fontSize="small" color="primary" style={{ marginRight: '0.3rem' }}>
+          <ArrowBackIcon fontSize="small" />
+        </Icon>
+        <Typography variant="body1" color="primary">Back to Home</Typography>
+      </Link>
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
@@ -89,7 +111,7 @@ export default function CreatePackage() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5" sx={{ mb: 4 }}>
-              Create Package Form
+              Create Package
             </Typography>
             <Formik
               initialValues={initialValues}
@@ -179,6 +201,17 @@ export default function CreatePackage() {
                   <Grid item xs={12}>
                     <Field
                       component={FormikTextField}
+                      name="from_location"
+                      type="text"
+                      label="From Location"
+                      fullWidth
+                      error={touched.from_location && Boolean(errors.from_location)}
+                      helperText={touched.from_location && errors.from_location}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      component={FormikTextField}
                       name="to_name"
                       type="text"
                       label="To Name"
@@ -196,6 +229,17 @@ export default function CreatePackage() {
                       fullWidth
                       error={touched.to_address && Boolean(errors.to_address)}
                       helperText={touched.to_address && errors.to_address}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      component={FormikTextField}
+                      name="to_location"
+                      type="text"
+                      label="To Location"
+                      fullWidth
+                      error={touched.to_location && Boolean(errors.to_location)}
+                      helperText={touched.to_location && errors.to_location}
                     />
                   </Grid>
                 </Grid>

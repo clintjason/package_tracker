@@ -1,7 +1,9 @@
 import { Container, Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const NotFound = () => {
+import imgnotfound from '../../assets/18.png';
+
+const NotFound404 = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
@@ -9,11 +11,10 @@ const NotFound = () => {
   };
 
   return (
-    <Container sx={{ textAlign: 'center', mt: 10 }}>
+    <Container sx={{ textAlign: 'center', mt: 10, 
+     }}>
+      <img src={imgnotfound} alt="404 Not Found Image" width='50%' />
       <Box>
-        <Typography variant="h1" component="div" gutterBottom>
-          404
-        </Typography>
         <Typography variant="h4" component="div" gutterBottom>
           Page Not Found
         </Typography>
@@ -28,4 +29,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default NotFound404;

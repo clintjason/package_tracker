@@ -7,9 +7,9 @@ const Delivery = require('../../models/Delivery');
  */
 exports.getAllDeliveries = async () => {
     try {
-        return await Delivery.find();
+        return await Delivery.find().populate('package_id');;
     } catch (error) {
-        throw new Error('Error fetching deliveries');
+        throw new Error(error || 'Error fetching deliveries');
     }
 };
 
@@ -23,7 +23,7 @@ exports.getDeliveryById = async (deliveryId) => {
     try {
         return await Delivery.findById(deliveryId).populate('package_id');
     } catch (error) {
-        throw new Error('Error fetching delivery');
+        throw new Error(error || 'Error fetching delivery');
     }
 };
 
@@ -37,7 +37,7 @@ exports.createDelivery = async (deliveryData) => {
     try {
         return await Delivery.create(deliveryData);
     } catch (error) {
-        throw new Error('Error creating delivery');
+        throw new Error(error || 'Error creating delivery');
     }
 };
 
@@ -52,7 +52,7 @@ exports.updateDelivery = async (deliveryId, deliveryData) => {
     try {
         return await Delivery.findByIdAndUpdate(deliveryId, deliveryData, { new: true });
     } catch (error) {
-        throw new Error('Error updating delivery');
+        throw new Error(error || 'Error updating delivery');
     }
 };
 
@@ -66,7 +66,7 @@ exports.deleteDelivery = async (deliveryId) => {
     try {
         await Delivery.findByIdAndDelete(deliveryId);
     } catch (error) {
-        throw new Error('Error deleting delivery');
+        throw new Error(error || 'Error deleting delivery');
     }
 };
 
@@ -80,6 +80,56 @@ exports.getActiveDelivery = async (deliveryId) => {
     try {
         return await Delivery.findById(deliveryId);
     } catch (error) {
-        throw new Error('Error fetching active delivery');
+        throw new Error(error || 'Error fetching active delivery');
+    }
+};
+
+/**
+ * Search Deliveries.
+ * @param {Object} [query] - The search query.
+ * @param {string} [query.searchTerm] - The search term to match against all fields.
+ * @param {number} [query.page=1] - The page number for pagination.
+ * @param {number} [query.limit=10] - The number of results to return per page.
+ * @returns {Promise<{ deliveries: Array<Delivery>, totalPages: number, currentPage: number }>} The search results.
+ * @throws {Error} If an error occurs while searching the packages.
+ */
+exports.searchDeliveries = async (query = {}) => {
+    try {
+        const { searchTerm, page = 1, limit = 10 } = query;
+        const searchOptions = {};
+
+        if (searchTerm) {
+            searchOptions.$or = [
+                { '_id': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.active_delivery_id': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.description': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.weight': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.width': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.height': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.depth': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.from_name': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.from_address': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.to_name': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.to_address': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'package_id.createdAt': { $regex: new RegExp(searchTerm, 'i') } },
+                { 'createdAt': { $regex: new RegExp(searchTerm, 'i') } }
+            ];
+        }
+
+        const deliveries = await Delivery.find(searchOptions)
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .sort({ createdAt: -1 });
+
+        const totalDeliveries = await Delivery.countDocuments(searchOptions);
+        const totalPages = Math.ceil(totalDeliveries / limit);
+
+        return {
+            deliveries,
+            totalPages,
+            currentPage: page
+        };
+    } catch (error) {
+        throw new Error(error || 'Error searching deliveries');
     }
 };

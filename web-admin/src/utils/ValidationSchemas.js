@@ -14,6 +14,81 @@ const conditions = [
   "Hydrated",
 ];
 
+
+export const deliveryValidationSchema = Yup.object().shape({
+  pickup_time: Yup.string()
+    .required('Pickup time is required')
+    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Pickup time must be in the format HH:mm')
+    .nullable(),
+  start_time: Yup.string()
+    .required('Start time is required')
+    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Start time must be in the format HH:mm')
+    .nullable(),
+  end_time: Yup.string()
+    .required('End time is required')
+    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'End time must be in the format HH:mm')
+    .test(
+      'isAfterStartTime',
+      'End time must be after start time',
+      (value, context) => {
+        const startTime = context.parent.start_time;
+        if (!startTime || !value) return true;
+        const startDate = new Date(`1970-01-01 ${startTime}`);
+        const endDate = new Date(`1970-01-01 ${value}`);
+        return endDate.getTime() > startDate.getTime();
+      }
+    )
+    .nullable(),
+  package_id: Yup.string()
+    .required('Package ID is required')
+});
+
+export const packageIdValidationSchema = Yup.object().shape({
+  package_id: Yup.string()
+    .required('Package ID is required')
+})
+
+export const locationValidationSchema = Yup.object().shape({
+  from_location: Yup.string()
+    .required('From location is required')
+    .matches(
+      /^(-?\d{1,3}\.\d{1,6})\s(-?\d{1,3}\.\d{1,6})$/,
+      'From location must be in the format "lat long" (e.g., "37.7749 -122.4194")'
+    )
+    .test(
+      'valid_coordinates',
+      'From location must have valid latitude and longitude values',
+      (value) => {
+        const [lat, lng] = value.split(' ');
+        return (
+          parseFloat(lat) >= -90 &&
+          parseFloat(lat) <= 90 &&
+          parseFloat(lng) >= -180 &&
+          parseFloat(lng) <= 180
+        );
+      }
+    ),
+  to_location: Yup.string()
+    .required('To location is required')
+    .matches(
+      /^(-?\d{1,3}\.\d{1,6})\s(-?\d{1,3}\.\d{1,6})$/,
+      'To location must be in the format "lat long" (e.g., "37.7749 -122.4194")'
+    )
+    .test(
+      'valid_coordinates',
+      'To location must have valid latitude and longitude values',
+      (value) => {
+        const [lat, lng] = value.split(' ');
+        return (
+          parseFloat(lat) >= -90 &&
+          parseFloat(lat) <= 90 &&
+          parseFloat(lng) >= -180 &&
+          parseFloat(lng) <= 180
+        );
+      }
+    ),
+});
+
 export const packageValidationSchema = Yup.object().shape({
   description: Yup.string()
     .required('Description is required')
@@ -60,6 +135,44 @@ export const packageValidationSchema = Yup.object().shape({
     .min(10, 'Recipient address must be at least 10 characters long')
     .max(200, 'Recipient address must be no more than 200 characters long')
     .matches(/^[a-zA-Z0-9\s#,.-]+$/, 'Recipient address must only contain letters, numbers, and the characters #, ., -, and ,'),
+  from_location: Yup.string()
+    .required('From location is required')
+    .matches(
+      /^(-?\d{1,3}\.\d{1,6})\s(-?\d{1,3}\.\d{1,6})$/,
+      'From location must be in the format "lat long" (e.g., "37.7749 -122.4194")'
+    )
+    .test(
+      'valid_coordinates',
+      'From location must have valid latitude and longitude values',
+      (value) => {
+        const [lat, lng] = value.split(' ');
+        return (
+          parseFloat(lat) >= -90 &&
+          parseFloat(lat) <= 90 &&
+          parseFloat(lng) >= -180 &&
+          parseFloat(lng) <= 180
+        );
+      }
+    ),
+  to_location: Yup.string()
+    .required('To location is required')
+    .matches(
+      /^(-?\d{1,3}\.\d{1,6})\s(-?\d{1,3}\.\d{1,6})$/,
+      'To location must be in the format "lat long" (e.g., "37.7749 -122.4194")'
+    )
+    .test(
+      'valid_coordinates',
+      'From location must have valid latitude and longitude values',
+      (value) => {
+        const [lat, lng] = value.split(' ');
+        return (
+          parseFloat(lat) >= -90 &&
+          parseFloat(lat) <= 90 &&
+          parseFloat(lng) >= -180 &&
+          parseFloat(lng) <= 180
+        );
+      }
+    ),
 });
 
 export const passwordValidationSchema = Yup.string()

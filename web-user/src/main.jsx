@@ -6,14 +6,14 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import { Provider } from 'react-redux';
 import store from './store';
-//import { login } from './reducers/authSlice'; 
 import './index.css';
 
+//const currentHostname = location.hostname;
 // Load user from storage
-/* const user = JSON.parse(localStorage.getItem('pms_user')) || JSON.parse(sessionStorage.getItem('pms_user'));
+const user = JSON.parse(localStorage.getItem('pt_user')) || JSON.parse(sessionStorage.getItem('pt_user'));
 if (user) {
-  store.dispatch(login(user));
-} */
+  //store.dispatch(login(user));
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
