@@ -5,18 +5,6 @@ const { authenticate, checkRole } = require('../../middlewares/authMiddleware');
 
 /**
  * @swagger
- * /deliveries:
- *   get:
- *     summary: Get all deliveries
- *     tags: [Deliveries]
- *     responses:
- *       200:
- *         description: List of all deliveries
- */
-router.get('/', authenticate, deliveryController.getAllDeliveries);
-
-/**
- * @swagger
  * /deliveries/{deliveryId}:
  *   get:
  *     summary: Get a delivery by ID
@@ -32,7 +20,23 @@ router.get('/', authenticate, deliveryController.getAllDeliveries);
  *       200:
  *         description: The delivery data
  */
-router.get('/:deliveryId', authenticate, deliveryController.getDeliveryById);
+//router.get('/:deliveryId', authenticate, deliveryController.getDeliveryById);
+router.get('/:deliveryId', deliveryController.getDeliveryById);
+
+/**
+ * @swagger
+ * /deliveries:
+ *   get:
+ *     summary: Get all deliveries
+ *     tags: [Deliveries]
+ *     responses:
+ *       200:
+ *         description: List of all deliveries
+ */
+//router.get('/', authenticate, deliveryController.getAllDeliveries);
+router.get('/', deliveryController.getAllDeliveries);
+
+router.get('/:search?', deliveryController.searchDeliveries);
 
 /**
  * @swagger
@@ -44,7 +48,8 @@ router.get('/:deliveryId', authenticate, deliveryController.getDeliveryById);
  *       201:
  *         description: The created delivery
  */
-router.post('/', authenticate, checkRole('admin'), deliveryController.createDelivery);
+//router.post('/', authenticate, checkRole('admin'), deliveryController.createDelivery);
+router.post('/', deliveryController.createDelivery);
 
 /**
  * @swagger
@@ -63,7 +68,8 @@ router.post('/', authenticate, checkRole('admin'), deliveryController.createDeli
  *       200:
  *         description: The updated delivery
  */
-router.put('/:deliveryId', authenticate, checkRole('admin'), deliveryController.updateDelivery);
+//router.put('/:deliveryId', authenticate, checkRole('admin'), deliveryController.updateDelivery);
+router.put('/:deliveryId', deliveryController.updateDelivery);
 
 /**
  * @swagger
@@ -82,7 +88,8 @@ router.put('/:deliveryId', authenticate, checkRole('admin'), deliveryController.
  *       204:
  *         description: Delivery deleted
  */
-router.delete('/:deliveryId', authenticate, checkRole('admin'), deliveryController.deleteDelivery);
+//router.delete('/:deliveryId', authenticate, checkRole('admin'), deliveryController.deleteDelivery);
+router.delete('/:deliveryId', deliveryController.deleteDelivery);
 
 /**
  * @swagger
@@ -113,7 +120,8 @@ router.delete('/:deliveryId', authenticate, checkRole('admin'), deliveryControll
  *       404:
  *         description: Delivery not found
  */
-router.patch('/:id/status', authenticate, deliveryController.updateStatus);
+//router.patch('/:id/status', authenticate, deliveryController.updateStatus);
+router.patch('/:id/status', deliveryController.updateStatus);
 
 /**
  * @swagger
@@ -148,6 +156,7 @@ router.patch('/:id/status', authenticate, deliveryController.updateStatus);
  *       404:
  *         description: Delivery not found
  */
-router.patch('/:id/location', authenticate, deliveryController.updateLocation);
+//router.patch('/:id/location', authenticate, deliveryController.updateLocation);
+router.patch('/:id/location', deliveryController.updateLocation);
 
 module.exports = router;

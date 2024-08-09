@@ -2,11 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const packageSchema = new Schema({
-    package_id: {
-        type: String,
-        required: true,
-        unique: true
-    },
     active_delivery_id: {
         type: String,
         default: null
@@ -55,12 +50,13 @@ const packageSchema = new Schema({
         lat: { type: Number, required: true },
         lng: { type: Number, required: true }
     },
-    created_by: {
+    /* created_by: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    }
+    } */
 }, {
+    _id: true,
     timestamps: true
 });
 

@@ -73,3 +73,16 @@ exports.login = async (email, password) => {
         throw new Error( error ||'Error logging in user');
     }
 };
+
+
+/**
+ * Authenticate the user by checking the session.
+ * @param {Object} req - Express request object.
+ * @returns {Object|null} The user object if authenticated, otherwise null.
+ */
+exports.authenticateUser = async (req) => {
+    if (req.session && req.session.userId) {
+        return await User.findById(req.session.userId);
+    }
+    return null;
+}

@@ -8,9 +8,9 @@ import sideImg from '../../assets/15-dark.png';
 import {passwordValidationSchema, emailValidationSchema   } from '../../utils/ValidationSchemas';
 import { TextField as FormikTextField } from 'formik-mui';
 import { apiLogin } from '../../services/api.service';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login as loginReducer } from '../../reducers/authSlice'; 
+import { setUser } from '../../reducers/authSlice'; 
 
 function Copyright(props) {
   return (
@@ -32,7 +32,7 @@ export default function SignIn () {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleClose = () => {
@@ -54,17 +54,18 @@ export default function SignIn () {
       } else {
         sessionStorage.setItem('pt_user', JSON.stringify(data));
       }
-      dispatch(loginReducer(data));
+      dispatch(setUser(data));
       setLoading(false);
+      console.log(data);
+      window.parent.postMessage({ type: 'message', data: JSON.stringify(data) }, '*');
       if(data.user.role === 'admin') {
-        navigate('/');
-        window.location.href=''
+        window.open('http://localhost:5174', '_blank');
       }
       if (data.user.role === 'customer') {
-        navigate('/');
+        window.location.href='http://localhost:5173'
       }
       if (data.user.role === 'driver') {
-        navigate('/');
+        window.location.href='http://localhost:5172'
       }
     } catch (error) {
       console.error("Signin Error: ", error);

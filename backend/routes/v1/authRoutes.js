@@ -62,4 +62,68 @@ router.post('/signup', authController.signup);
  */
 router.post('/login', authController.login);
 
+/**
+ * @swagger
+ * /auht/logout:
+ *  post:
+ *     summary: Logout the user
+ *      description: Destroys the user's session and logs them out.
+ *      tags: [Auth]
+ *      responses:
+ *        '200':
+ *          description: Logout successful
+ *          content:
+ *            application/json:    
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Logout successful
+ *        '500':
+ *          description: Logout failed
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                    example: Logout failed
+ *      requestBody:
+ *        required: false
+ */ 
+router.post('/logout', authController.logout);
+
+/**
+ * @swagger
+ * /auth:
+ *  get:
+ *    summary: Get authenticated user info
+ *   description: Retrieves the authenticated user's information.
+ *    tags: [Auth]
+ *    responses:
+ *      '200':
+ *        description: Successful response
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                # User properties go here
+ *      '401':
+ *        description: Not authenticated
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: Not authenticated
+ *    security:
+ *      - bearerAuth: []
+ */
+router.get('/', authController.getAuthenticatedUser);
+
 module.exports = router;
