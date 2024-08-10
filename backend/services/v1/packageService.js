@@ -7,7 +7,7 @@ const Package = require('../../models/Package');
  */
 exports.getAllPackages = async () => {
     try {
-        return await Package.find();
+        return await Package.find().populate('active_delivery_id').sort({ createdAt: -1 });;
     } catch (error) {
         throw new Error(error || 'Error fetching packages');
     }
@@ -21,7 +21,7 @@ exports.getAllPackages = async () => {
  */
 exports.getPackageById = async (packageId) => {
     try {
-        return await Package.findById(packageId).populate('active_delivery_id');
+        return await Package.findById(packageId).populate('active_delivery_id').sort({ createdAt: -1 });
     } catch (error) {
         throw new Error(error || 'Error fetching package');
     }

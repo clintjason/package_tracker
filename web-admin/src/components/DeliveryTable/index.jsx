@@ -48,7 +48,7 @@ const DeliveryTable = () => {
       const response = await searchDeliveries(params.toString());
       //const response = await getAllDeliveries();
       setDeliveries(response);
-      console.log("Deliveries list: ", response.data);
+      console.log("Deliveries list: ", response);
       setLoading(false);
       setOpen(true);
     } catch (error) {
@@ -111,9 +111,9 @@ const DeliveryTable = () => {
                   <TableCell>{delivery.package_id?.description}</TableCell>
                   <TableCell>{delivery.package_id?.from_name}</TableCell>
                   <TableCell>{delivery.package_id?.to_name}</TableCell>
-                  <TableCell>{delivery?.pickup_time ? new Date(delivery?.pickup_time).toLocaleString() : 'N/A'}</TableCell>
-                  <TableCell>{delivery?.start_time ? new Date(delivery?.start_time).toLocaleString() : 'N/A' }</TableCell>
-                  <TableCell>{delivery?.end_time ? new Date(delivery?.end_time).toLocaleString(): 'N/A'}</TableCell>
+                  <TableCell>{delivery?.pickup_time ? new Date(delivery?.pickup_time).toLocaleTimeString() : 'N/A'}</TableCell>
+                  <TableCell>{delivery?.start_time ? new Date(delivery?.start_time).toLocaleTimeString() : 'N/A' }</TableCell>
+                  <TableCell>{delivery?.end_time ? new Date(delivery?.end_time).toLocaleTimeString(): 'N/A'}</TableCell>
                   <TableCell>{JSON.stringify(delivery?.location)}</TableCell>
                   <TableCell>{delivery.status || 'N/A'}</TableCell>
                   <TableCell>{new Date(delivery.createdAt).toLocaleString()}</TableCell>

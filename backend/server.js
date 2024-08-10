@@ -1,14 +1,10 @@
 const http = require('http');
 const app = require('./app');
-const wss = require('./utils/websocket');
+const { initWebSocketServer } = require('./utils/websocket');
 
 const server = http.createServer(app);
 
-server.on('upgrade', (request, socket, head) => {
-    wss.handleUpgrade(request, socket, head, (ws) => {
-        wss.emit('connection', ws, request);
-    });
-});
+initWebSocketServer(server);
 
 const PORT = process.env.PORT || 5000;
 
