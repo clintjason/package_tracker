@@ -5,18 +5,6 @@ const { authenticate, checkRole } = require('../../middlewares/authMiddleware');
 
 /**
  * @swagger
- * /packages:
- *   get:
- *     summary: Get all packages
- *     tags: [Packages]
- *     responses:
- *       200:
- *         description: List of all packages
- */
-router.get('/', authenticate, packageController.getAllPackages);
-
-/**
- * @swagger
  * /packages/{packageId}:
  *   get:
  *     summary: Get a package by ID
@@ -32,7 +20,22 @@ router.get('/', authenticate, packageController.getAllPackages);
  *       200:
  *         description: The package data
  */
-router.get('/:packageId', authenticate, packageController.getPackageById);
+//router.get('/:packageId', authenticate, packageController.getPackageById);
+router.get('/:packageId', packageController.getPackageById);
+
+/**
+ * @swagger
+ * /packages:
+ *   get:
+ *     summary: Get all packages
+ *     tags: [Packages]
+ *     responses:
+ *       200:
+ *         description: List of all packages
+ */
+//router.get('/', authenticate, packageController.getAllPackages);
+router.get('/', packageController.getAllPackages);
+router.get('/:search?', packageController.searchPackages);
 
 /**
  * @swagger
@@ -44,7 +47,8 @@ router.get('/:packageId', authenticate, packageController.getPackageById);
  *       201:
  *         description: The created package
  */
-router.post('/', authenticate, checkRole('admin'), packageController.createPackage);
+router.post('/', packageController.createPackage);
+//router.post('/', authenticate, checkRole('admin'), packageController.createPackage);
 
 /**
  * @swagger
@@ -63,7 +67,8 @@ router.post('/', authenticate, checkRole('admin'), packageController.createPacka
  *       200:
  *         description: The updated package
  */
-router.put('/:packageId', authenticate, checkRole('admin'), packageController.updatePackage);
+//router.put('/:packageId', authenticate, checkRole('admin'), packageController.updatePackage);
+router.put('/:packageId', packageController.updatePackage);
 
 /**
  * @swagger
@@ -82,6 +87,7 @@ router.put('/:packageId', authenticate, checkRole('admin'), packageController.up
  *       204:
  *         description: Package deleted
  */
-router.delete('/:packageId', authenticate, checkRole('admin'), packageController.deletePackage);
+//router.delete('/:packageId', authenticate, checkRole('admin'), packageController.deletePackage);
+router.delete('/:packageId', packageController.deletePackage);
 
 module.exports = router;

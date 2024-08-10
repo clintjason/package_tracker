@@ -1,34 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import './App.css'
 
+import CreatePackage from './components/CreatePackage';
+import CreateDelivery from './components/CreateDelivery';
+import PackageTable from './components/PackageTable';
+import DeliveryTable from './components/DeliveryTable';
+import NotFound from './components/NotFound/NotFound404.component';
+import Home from './components/Home';
+
 function App() {
-  const [count, setCount] = useState(0)
+  const loginData = useSelector((state) => state.user);
+
+  /* function getAuthenticatedUser() {
+    fetch('http://localhost:5000/api/v1/auth/', {
+        method: 'GET',
+        credentials: 'include', // Important for including HTTP-only cookies
+    })
+    .then(response => response.json())
+    .then(user => {
+        // Use user data
+        console.log(user);
+    });
+  } */
+
+  useEffect(() => {
+    if (loginData) {
+      // Use the login data in this microfrontend
+      console.log("in the web admin")
+      console.log(loginData);
+    }
+  }, [loginData]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/create-package" element={<CreatePackage />} />
+        <Route path="/create-delivery" element={<CreateDelivery />} />
+        <Route path="/list-packages" element={<PackageTable />} />
+        <Route path="/list-deliveries" element={<DeliveryTable />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   )
 }
 

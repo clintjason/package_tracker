@@ -1,4 +1,5 @@
 const packageService = require('../../services/v1/packageService');
+const deliveryService = require('../../services/v1/deliveryService');
 
 /**
  * Get all packages.
@@ -31,10 +32,10 @@ exports.getPackageById = async (req, res, next) => {
             return res.status(404).json({ message: 'Package not found' });
         }
         if (package.active_delivery_id) {
-            const activeDelivery = await packageService.getActiveDelivery(package.active_delivery_id);
+            const activeDelivery = await deliveryService.getActiveDelivery(package.active_delivery_id);
             res.json({ package, activeDelivery });
         } else {
-            res.json(package);
+            res.json({ package });
         }
     } catch (error) {
         next(error);
@@ -92,6 +93,30 @@ exports.deletePackage = async (req, res, next) => {
         const packageId = req.params.packageId;
         await packageService.deletePackage(packageId);
         res.status(204).send();
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+/**
+ * Search packages.
+ * @param {Object} [query] - The search query.
+ * @param {string} [query.searchTerm] - The search term to match against all fields.
+ * @param {number} [query.page=1] - The page number for pagination.
+ * @param {number} [query.limit=10] - The number of results to return per page.
+ * @returns {Promise<{ packages: Array<Package>, totalPages: number, currentPage: number }>} The search results.
+ * @throws {Error} If an error occurs while searching the packages.
+ */
+exports.searchPackages = async (req, res, next) => {
+    try {
+        const { searchTerm, page, limit } = req.query;
+        const { packages, totalPages, currentPage } = await packageService.searchPackages({
+            searchTerm,
+            page: parseInt(page, 10) || 1,
+            limit: parseInt(limit, 10) || 10
+        });
+        res.json({ packages, totalPages, currentPage });
     } catch (error) {
         next(error);
     }

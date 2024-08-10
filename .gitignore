@@ -41,3 +41,10 @@ testem.log
 */.DS_Store
 .DS_Store
 Thumbs.db
+
+/*/.env
+
+/web-admin/.env
+/web-driver/.env.*
+/web-tracker/.env
+/web-user/.env.*

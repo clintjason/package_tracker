@@ -2,16 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const deliverySchema = new Schema({
-    delivery_id: {
-        type: String,
-        required: true,
-        unique: true
-    },
     package_id: {
         type: Schema.Types.ObjectId,
         ref: 'Package',
         required: true
     },
+    /* driver: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }, */
     pickup_time: {
         type: Date
     },
@@ -28,9 +28,9 @@ const deliverySchema = new Schema({
     status: {
         type: String,
         enum: ['open', 'picked-up', 'in-transit', 'delivered', 'failed'],
-        required: true
     }
 }, {
+    _id: true,
     timestamps: true
 });
 
