@@ -11,7 +11,7 @@ const swaggerOptions = {
         },
         servers: [{ url: '/api/v1' }],
     },
-    apis: ['./routes/*.js', './models/*.js'], 
+    apis: ['./routes/v1/*.js', './models/*.js'], 
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const Delivery = require('../models/Delivery');
+const Package = require('../models/Package');
 
 let wss;
 function initWebSocketServer(server) {
@@ -37,7 +38,7 @@ async function updateLocation(delivery_id, location) {
     console.log('in updateLocation');
     const delivery = await Delivery.findByIdAndUpdate(
         delivery_id,
-        { $set: { location } },
+        { $set: { location: location } },
         { new: true, runValidators: true }
       ).populate('package_id');
     console.log('Updating delivery: ', delivery);
@@ -50,13 +51,18 @@ async function updateStatus(delivery_id, status) {
     if (!delivery) {
         return res.status(404).json({ message: 'Delivery not found' });
     }
-    console.log('updateStatus delivery: ', delivery);
     delivery.status = status;
     const currentTime = new Date();
 
     switch (status) {
         case 'picked-up':
             delivery.pickup_time = currentTime;
+            delivery.package_id.active_delivery_id = delivery_id;
+            const pkg = await Package.findByIdAndUpdate(
+                delivery.package_id._id,
+                { $set: { active_delivery_id: delivery_id } },
+                { new: true, runValidators: true });
+            console.log('set active delivery: ', pkg);
             break;
         case 'in-transit':
             delivery.start_time = currentTime;
@@ -66,8 +72,9 @@ async function updateStatus(delivery_id, status) {
             delivery.end_time = currentTime;
             break;
     }
-    delivery.package_id.active_delivery_id = delivery_id;
+    
     await delivery.save();
+    console.log('updateStatus delivery: ', delivery);
     broadcastEvent('status_changed', { delivery_id, status });
     broadcastEvent('delivery_updated', { delivery: delivery.toObject() });
 }
