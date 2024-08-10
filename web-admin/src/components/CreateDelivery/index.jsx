@@ -70,7 +70,7 @@ export default function CreateDelivery() {
       console.log(values);
       const pkg = await getOnePackage(values.package_id);
       console.log("The package: ", pkg);
-      const payload = {...values, location: pkg.data.to_location}
+      const payload = {...values, location: pkg.data.to_location, status: 'open'};
       console.log("Payload: ", payload);
       await createDelivery(payload);
       setOpenD(true);

@@ -7,7 +7,7 @@ const Delivery = require('../../models/Delivery');
  */
 exports.getAllDeliveries = async () => {
     try {
-        return await Delivery.find().populate('package_id');;
+        return await Delivery.find().populate('package_id').sort({ createdAt: -1 });
     } catch (error) {
         throw new Error(error || 'Error fetching deliveries');
     }
@@ -21,7 +21,7 @@ exports.getAllDeliveries = async () => {
  */
 exports.getDeliveryById = async (deliveryId) => {
     try {
-        return await Delivery.findById(deliveryId).populate('package_id');
+        return await Delivery.findById(deliveryId).populate('package_id').sort({ createdAt: -1 });
     } catch (error) {
         throw new Error(error || 'Error fetching delivery');
     }
