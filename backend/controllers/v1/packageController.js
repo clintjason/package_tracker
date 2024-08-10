@@ -1,4 +1,5 @@
 const packageService = require('../../services/v1/packageService');
+const deliveryService = require('../../services/v1/deliveryService');
 
 /**
  * Get all packages.
@@ -31,10 +32,10 @@ exports.getPackageById = async (req, res, next) => {
             return res.status(404).json({ message: 'Package not found' });
         }
         if (package.active_delivery_id) {
-            const activeDelivery = await packageService.getActiveDelivery(package.active_delivery_id);
+            const activeDelivery = await deliveryService.getActiveDelivery(package.active_delivery_id);
             res.json({ package, activeDelivery });
         } else {
-            res.json(package);
+            res.json({ package });
         }
     } catch (error) {
         next(error);

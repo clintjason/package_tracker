@@ -9,19 +9,6 @@ import store from './store';
 //import { login } from './reducers/authSlice'; 
 import './index.css';
 
-// Load user from storage
-/* const user = JSON.parse(localStorage.getItem('pms_user')) || JSON.parse(sessionStorage.getItem('pms_user'));
-if (user) {
-  store.dispatch(login(user));
-} */
-/* 
-window.addEventListener('storage', () => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  console.log("Received an event")
-  if (user) {
-      // Update local state or make authenticated API requests
-  }
-}); */
 window.addEventListener('message', (event) => {
   if (event.data.type === 'message') {
     console.log("In the event")

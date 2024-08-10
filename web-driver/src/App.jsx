@@ -153,9 +153,6 @@ function App() {
         }
       } catch (error) {
         console.error('Error fetching location:', error);
-      } finally {
-        // Enable the button again, regardless of whether the location was fetched successfully or not
-        setDisableTransitBtn(false);
       }
     } else {
       console.error('Socket connection is not active. Unable to send events.');

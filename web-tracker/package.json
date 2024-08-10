@@ -11,9 +11,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^5.16.7",
+    "axios": "^1.7.3",
     "dotenv": "^16.4.5",
+    "formik": "^2.4.6",
+    "formik-mui": "^5.0.0-alpha.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@angular-architects/native-federation": "^18.0.2",
@@ -27,6 +34,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "google-maps-react": "^2.0.6",
     "vite": "^5.4.0"
   }
 }
