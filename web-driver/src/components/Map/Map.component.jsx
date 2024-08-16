@@ -5,7 +5,7 @@ import blueDot from '../../assets/blue-dot.png';
 import greenDot from '../../assets/green-dot.png';
 import redDot from '../../assets/red-dot.png';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDN54dOWEr9y-nkt11-hMmk_LN5aQC7Fmo';
+const GOOGLE_MAPS_API_KEY = import.meta.env.GOOGLE_MAPS_API_KEY;
 
 const mapStyles = {
   width: '60%',
