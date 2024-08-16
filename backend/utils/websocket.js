@@ -42,7 +42,7 @@ async function updateLocation(delivery_id, location) {
         { new: true, runValidators: true }
       ).populate('package_id');
     console.log('Updating delivery: ', delivery);
-    broadcastEvent('location_changed', { delivery: delivery.toObject(), location });
+    broadcastEvent('delivery_updated', { delivery: delivery.toObject(), location });
 }
 
 async function updateStatus(delivery_id, status) {

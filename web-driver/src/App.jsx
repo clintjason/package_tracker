@@ -35,6 +35,7 @@ function App() {
   const [disableFailedBtn, setDisableFailedBtn] = useState(true);
   const [socket, setSocket] = useState(null);
   const [delivery, setDelivery] = useState(null);
+  const [socketReady, setSocketReady] = useState(false);
   const [deliveryStatus, setDeliveryStatus] = useState('');
   const [currentLocation, setCurrentLocation] = useState(null);
 
@@ -127,7 +128,7 @@ function App() {
     setDisableTransitBtn(true);
   
     // Check if the socket connection is still active
-    if (socket && socket.readyState === WebSocket.OPEN) {
+    if (socketReady) {
       socket.send(
         JSON.stringify({
           event: 'status_changed',
@@ -140,16 +141,27 @@ function App() {
         let coordinates = await fetchLocation();
         console.log('Coordinates: ', coordinates);
         setCurrentLocation(coordinates);
-  
+        console.log("socket: ", socket);
+        console.log("WebSocket: ", WebSocket.OPEN)
         // Check if the socket connection is still active before sending the location update
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(
-            JSON.stringify({
-              event: 'location_changed',
-              delivery_id: delivery?._id,
-              location: coordinates,
-            })
-          );
+        if (socketReady) {
+          console.log('Socket connection is active, sending "location_changed" event');
+          const newSocket = new WebSocket('ws://localhost:5000');
+          newSocket.onopen = () => {
+            newSocket.send(
+              JSON.stringify({
+                event: 'location_changed',
+                delivery_id: delivery?._id,
+                location: coordinates,
+              })
+            );
+            return () => {
+              newSocket.close();
+            };
+          };
+          console.log('We are now here')
+        } else {
+          console.error('Socket connection is not active. Unable to send location update.');
         }
       } catch (error) {
         console.error('Error fetching location:', error);
@@ -221,7 +233,7 @@ function App() {
     newSocket.onopen = () => {
       console.log('WebSocket connection established');
       setSocket(newSocket);
-      
+      setSocketReady(true);
       // Start fetching location every 20 seconds
       let intervalId;
       if(delivery?.status === 'in-transit') {
@@ -256,6 +268,7 @@ function App() {
 
     newSocket.onclose = () => {
       console.log('Disconnected from WebSocket server');
+      setSocketReady(false);
     };
 
     newSocket.onerror = (error) => {

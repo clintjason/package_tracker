@@ -31,6 +31,7 @@ function App() {
   const [error, setError] = useState('');
   const [socket, setSocket] = useState(null);
   const [pkg, setPackage] = useState(null);
+  const [update, setUpdate] = useState(new Date());
   const [currentLocation, setCurrentLocation] = useState(null);
 
   const initialValues = {
@@ -54,6 +55,12 @@ function App() {
     }
   };
 
+  const fetchPackage = async (delivery) => {
+    const pkg = await getOnePackage(delivery.package_id._id);
+    console.log("The package: ", pkg);
+    return pkg.data;
+  }
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -72,14 +79,36 @@ function App() {
       };
     };
 
-    newSocket.onmessage = (event) => {
+    newSocket.onmessage = async (event) => {
       const data = JSON.parse(event.data);
-      console.log('Received message:', data);
+      console.log('received message: ', data);
+      if (data.event === 'status_updated') {
+        console.log('delivery_updated:', data.delivery);
+        //setPackage(data.delivery);
+        //setPackage(data.delivery.location);
+        let result = await fetchPackage(data.delivery);
+        console.log('result:', result);
+
+        setPackage(result);
+        setUpdate(new Date());
+      }
 
       if (data.event === 'delivery_updated') {
         console.log('delivery_updated:', data.delivery);
-        //setPackage(data.delivery);
         setCurrentLocation(data.delivery.location);
+        let result = await fetchPackage(data.delivery);
+        console.log('result:', result);
+        setPackage(result);
+        setUpdate(new Date());
+      }
+
+      if (data.event === 'location_changed') {
+        console.log('location_changed:', data.delivery);
+        let result = await fetchPackage(data.delivery);
+        console.log('result:', result);
+
+        setPackage(result);
+        setUpdate(new Date());
       }
     };
 
@@ -95,7 +124,7 @@ function App() {
       // Clean up the WebSocket connection when the component unmounts
       newSocket.close();
     };
-  }, [pkg]);
+  }, [pkg, update]);
 
   return (
     <>
