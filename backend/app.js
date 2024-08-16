@@ -15,7 +15,7 @@ const app = express();
 // Database connection
 connectDB();
 
-app.use(express.json());
+app.use(express.json()); // parses JSON payloads into req.body object
 app.use(session);
 app.use(cookieParser());
 

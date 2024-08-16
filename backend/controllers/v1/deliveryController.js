@@ -31,6 +31,7 @@ exports.getDeliveryById = async (req, res, next) => {
         if (!delivery) {
             return res.status(404).json({ message: 'Delivery not found' });
         }
+        console.log('delivery: ', delivery)
         res.json(delivery);
     } catch (error) {
         next(error);

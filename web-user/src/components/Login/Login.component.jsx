@@ -10,7 +10,7 @@ import { TextField as FormikTextField } from 'formik-mui';
 import { apiLogin } from '../../services/api.service';
 //import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../reducers/authSlice'; 
+import { setUser } from '../../reducers/userSlice'; 
 
 function Copyright(props) {
   return (
